@@ -5,9 +5,8 @@ const { Client, Account, Databases, ID, Query } = Appwrite;
 const client = new Client();
 //----------------------
 var playerName = prompt("Enter Player Name");
-// developing application step by step
 
-//defining our sceret number score and highscore
+//------------------------------------------------------
 let secretNumber = Math.trunc(Math.random() * 20) + 1;
 let currScore = 20;
 let currHighScore = 0;
@@ -16,15 +15,15 @@ const displayMessage = function (message) {
     document.querySelector(".message").textContent = message;
 };
 
-//event listener
+//-----------------------------------------------------------
 document.querySelector(".check").addEventListener("click", function () {
     let guess = Number(document.querySelector(".guess").value);
     if (currScore > 0) {
         if (!guess) {
-            // document.querySelector('.message').textContent='⛔No number!';
+            
             displayMessage("⛔No number!");
         } else if (guess === secretNumber) {
-            // document.querySelector('.message').textContent='😎 Correct Number ';
+            
             displayMessage("😎 Correct Number ");
             document.querySelector(".number").textContent = secretNumber;
             if (currScore > currHighScore) {
@@ -34,17 +33,16 @@ document.querySelector(".check").addEventListener("click", function () {
             setScoreOnServer();
             document.querySelector("body").style.backgroundColor = "#60b347";
         } else {
-            // document.querySelector('.message').textContent=guess>secretNumber?'📈 Too high':'📉 Too low ';
             displayMessage(guess > secretNumber ? "📈 Too high" : "📉 Too low ");
             currScore--;
             document.querySelector(".score").textContent = currScore;
         }
     } else {
-        // document.querySelector('.message').textContent='🚨 you lost the Game! ';
         displayMessage("🚨 you lost the Game! ");
     }
 });
 
+//---------------------------------------------------------------------------
 document.querySelector(".again").addEventListener("click", function () {
     secretNumber = Math.trunc(Math.random() * 20) + 1;
     console.log(secretNumber);
@@ -66,7 +64,6 @@ function getMaxScoreUser() {
     //-----------------------------------
     const date = new Date(Date.now());
     const key = `${date.getDate()}/${date.getFullYear()}`;
-    //   console.log(key);
     //---------------------------------
     databases
         .getDocument("64ff1122d44c1b583e4b", "64ff176d48790f46f55a", "", [
@@ -80,18 +77,15 @@ function getMaxScoreUser() {
             if (len == 0) {
                 document.querySelector(".highscore").textContent = currHighScore;
             } else {
-                // console.log(array[0]);
                 let obj = JSON.parse(JSON.stringify(array[0]));
                 currHighScore = Math.max(currHighScore,obj.value)
                 document.querySelector(".highscore").textContent = currHighScore;
                 document.querySelector(".name").textContent = obj.name;
                 
             }
-            //   console.log(array,array.length);
-            //   console.log(obj.total);
         });
-    //----------------------------------------------------
 }
+//--------------------------------
 getMaxScoreUser();
 //-------------------------------
 function setScoreOnServer() {
@@ -103,7 +97,6 @@ function setScoreOnServer() {
     //-----------------------------------
     const date = new Date(Date.now());
     const key = `${date.getDate()}/${date.getFullYear()}`;
-    //   console.log(key);
     //---------------------------------
     databases
         .getDocument("64ff1122d44c1b583e4b", "64ff176d48790f46f55a", "", [
@@ -134,15 +127,15 @@ function setScoreOnServer() {
                     }
                 );
             } else {
-                // console.log(array[0]);
+                
                 let obj = JSON.parse(JSON.stringify(array[0]));
                 currHighScore = Math.max(currHighScore,obj.value)
                 document.querySelector(".highscore").textContent = currHighScore;
-                // // console.log(obj);
+               
                 let theirName = obj.name;
                 let theirValue = obj.value;
                 let d_id = array[0].$id;
-                // console.log(theirName,theirValue);
+                
                 if (currScore > theirValue) {
                     theirName = playerName;
                     theirValue = currScore;
