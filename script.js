@@ -70,7 +70,7 @@ function getMaxScoreUser() {
             Query.equal("date", key),
         ])
         .then((obj) => {
-            console.log(obj.documents);
+            // console.log(obj.documents);
 
             let array = obj.documents;
             let len = array.length;
@@ -103,7 +103,7 @@ function setScoreOnServer() {
             Query.equal("date", key),
         ])
         .then((obj) => {
-            console.log(obj.documents);
+            // console.log(obj.documents);
 
             let array = obj.documents;
             let len = array.length;
@@ -120,7 +120,7 @@ function setScoreOnServer() {
                 );
                 promise.then(
                     function (response) {
-                        console.log(response);
+                        // console.log(response);
                     },
                     function (error) {
                         console.log(error);
@@ -150,8 +150,8 @@ function setScoreOnServer() {
                         }
                     );
                     promise.then((obj) => {
-                        console.log(obj);
-                        console.log("hogya data update");
+                        // console.log(obj);
+                        // console.log("hogya data update");
                         getMaxScoreUser();
                     });
                 }
