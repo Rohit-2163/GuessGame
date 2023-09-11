@@ -1,56 +1,168 @@
-'use strict';
-
+"use strict";
+//Appwrite code
+//----------------------
+const { Client, Account, Databases, ID, Query } = Appwrite;
+const client = new Client();
+//----------------------
+var playerName = "Tony Stark";
 // developing application step by step
 
 //defining our sceret number score and highscore
-let secretNumber = Math.trunc(Math.random()*20)+1;  
-let currScore=20;
-let currHighScore=0;
+let secretNumber = Math.trunc(Math.random() * 20) + 1;
+let currScore = 20;
+let currHighScore = 0;
 
-const displayMessage=function(message){
-    document.querySelector('.message').textContent=message;
+const displayMessage = function (message) {
+    document.querySelector(".message").textContent = message;
 };
 
 //event listener
-document.querySelector('.check').addEventListener('click',function(){
-    let guess=Number(document.querySelector('.guess').value);
+document.querySelector(".check").addEventListener("click", function () {
+    let guess = Number(document.querySelector(".guess").value);
     if (currScore > 0) {
-        if(!guess){
+        if (!guess) {
             // document.querySelector('.message').textContent='⛔No number!';
-            displayMessage('⛔No number!');
-        }else if(guess===secretNumber){
+            displayMessage("⛔No number!");
+        } else if (guess === secretNumber) {
             // document.querySelector('.message').textContent='😎 Correct Number ';
-            displayMessage('😎 Correct Number ')
-            document.querySelector('.number').textContent=secretNumber;
-            if(currScore>currHighScore){
-                currHighScore=currScore;
-                document.querySelector('.highscore').textContent=currHighScore;
+            displayMessage("😎 Correct Number ");
+            document.querySelector(".number").textContent = secretNumber;
+            if (currScore > currHighScore) {
+                currHighScore = currScore;
+                document.querySelector(".highscore").textContent = currHighScore;
             }
-            document.querySelector('body').style.backgroundColor='#60b347';
-    
-        }else{
+            setScoreOnServer();
+            document.querySelector("body").style.backgroundColor = "#60b347";
+        } else {
             // document.querySelector('.message').textContent=guess>secretNumber?'📈 Too high':'📉 Too low ';
-            displayMessage(guess>secretNumber?'📈 Too high':'📉 Too low ');
+            displayMessage(guess > secretNumber ? "📈 Too high" : "📉 Too low ");
             currScore--;
-            document.querySelector('.score').textContent=currScore;
+            document.querySelector(".score").textContent = currScore;
         }
-        
-    }else{
+    } else {
         // document.querySelector('.message').textContent='🚨 you lost the Game! ';
-        displayMessage('🚨 you lost the Game! ');
+        displayMessage("🚨 you lost the Game! ");
     }
-   
-
 });
 
-document.querySelector('.again').addEventListener('click',function(){
-    secretNumber=Math.trunc(Math.random()*20)+1;
+document.querySelector(".again").addEventListener("click", function () {
+    secretNumber = Math.trunc(Math.random() * 20) + 1;
     console.log(secretNumber);
-    currScore=20;
-    document.querySelector('.message').textContent='🎮Start guessing...';
-    document.querySelector('.score').textContent=currScore;
-    document.querySelector('.number').textContent='?';
-    document.querySelector('.guess').value='';
-    document.querySelector('body').style.backgroundColor='#333';
-
+    currScore = 20;
+    document.querySelector(".message").textContent = "🎮Start guessing...";
+    document.querySelector(".score").textContent = currScore;
+    document.querySelector(".number").textContent = "?";
+    document.querySelector(".guess").value = "";
+    document.querySelector("body").style.backgroundColor = "#333";
 });
+//----------------------------------------------------
+// Appwrite
+function getMaxScoreUser() {
+    client
+        .setEndpoint("https://cloud.appwrite.io/v1")
+        .setProject("64906375e9e333e824a5");
+    //---------------------------------
+    const databases = new Databases(client);
+    //-----------------------------------
+    const date = new Date(Date.now());
+    const key = `${date.getDate()}/${date.getFullYear()}`;
+    //   console.log(key);
+    //---------------------------------
+    databases
+        .getDocument("64ff1122d44c1b583e4b", "64ff176d48790f46f55a", "", [
+            Query.equal("date", key),
+        ])
+        .then((obj) => {
+            console.log(obj.documents);
+
+            let array = obj.documents;
+            let len = array.length;
+            if (len == 0) {
+                document.querySelector(".highscore").textContent = currHighScore;
+            } else {
+                // console.log(array[0]);
+                let obj = JSON.parse(JSON.stringify(array[0]));
+                currHighScore = Math.max(currHighScore,obj.value)
+                document.querySelector(".highscore").textContent = currHighScore;
+                
+            }
+            //   console.log(array,array.length);
+            //   console.log(obj.total);
+        });
+    //----------------------------------------------------
+}
+getMaxScoreUser();
+//-------------------------------
+function setScoreOnServer() {
+    client
+        .setEndpoint("https://cloud.appwrite.io/v1")
+        .setProject("64906375e9e333e824a5");
+    //---------------------------------
+    const databases = new Databases(client);
+    //-----------------------------------
+    const date = new Date(Date.now());
+    const key = `${date.getDate()}/${date.getFullYear()}`;
+    //   console.log(key);
+    //---------------------------------
+    databases
+        .getDocument("64ff1122d44c1b583e4b", "64ff176d48790f46f55a", "", [
+            Query.equal("date", key),
+        ])
+        .then((obj) => {
+            console.log(obj.documents);
+
+            let array = obj.documents;
+            let len = array.length;
+            if (len == 0) {
+                const promise = databases.createDocument(
+                    "64ff1122d44c1b583e4b",
+                    "64ff176d48790f46f55a",
+                    ID.unique(),
+                    {
+                        date: key,
+                        value: currScore,
+                        name: playerName,
+                    }
+                );
+                promise.then(
+                    function (response) {
+                        console.log(response);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                );
+            } else {
+                // console.log(array[0]);
+                let obj = JSON.parse(JSON.stringify(array[0]));
+                currHighScore = Math.max(currHighScore,obj.value)
+                document.querySelector(".highscore").textContent = currHighScore;
+                // // console.log(obj);
+                let theirName = obj.name;
+                let theirValue = obj.value;
+                let d_id = array[0].$id;
+                // console.log(theirName,theirValue);
+                if (currScore > theirValue) {
+                    theirName = playerName;
+                    theirValue = currScore;
+                    const promise = databases.updateDocument(
+                        "64ff1122d44c1b583e4b",
+                        "64ff176d48790f46f55a",
+                        d_id,
+                        {
+                            date: key,
+                            value: theirValue,
+                            name: theirName,
+                        }
+                    );
+                    promise.then((obj) => {
+                        console.log(obj);
+                        console.log("hogya data update");
+                        getMaxScoreUser();
+                    });
+                }
+            }
+        });
+    //----------------------------------------------------
+}
+
