@@ -4,7 +4,7 @@
 const { Client, Account, Databases, ID, Query } = Appwrite;
 const client = new Client();
 //----------------------
-var playerName = "Tony Stark";
+var playerName = prompt("Enter Player Name");
 // developing application step by step
 
 //defining our sceret number score and highscore
@@ -84,6 +84,7 @@ function getMaxScoreUser() {
                 let obj = JSON.parse(JSON.stringify(array[0]));
                 currHighScore = Math.max(currHighScore,obj.value)
                 document.querySelector(".highscore").textContent = currHighScore;
+                document.querySelector(".name").textContent = obj.name;
                 
             }
             //   console.log(array,array.length);
