@@ -54,6 +54,7 @@ document.querySelector(".again").addEventListener("click", function () {
 });
 //----------------------------------------------------
 // Appwrite
+getMaxScoreUser();
 function getMaxScoreUser() {
     client
         .setEndpoint("https://cloud.appwrite.io/v1")
