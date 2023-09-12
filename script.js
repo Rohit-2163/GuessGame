@@ -45,7 +45,6 @@ document.querySelector(".check").addEventListener("click", function () {
 //---------------------------------------------------------------------------
 document.querySelector(".again").addEventListener("click", function () {
     secretNumber = Math.trunc(Math.random() * 20) + 1;
-    console.log(secretNumber);
     currScore = 20;
     document.querySelector(".message").textContent = "🎮Start guessing...";
     document.querySelector(".score").textContent = currScore;
@@ -103,8 +102,6 @@ function setScoreOnServer() {
             Query.equal("date", key),
         ])
         .then((obj) => {
-            // console.log(obj.documents);
-
             let array = obj.documents;
             let len = array.length;
             if (len == 0) {
@@ -150,8 +147,6 @@ function setScoreOnServer() {
                         }
                     );
                     promise.then((obj) => {
-                        // console.log(obj);
-                        // console.log("hogya data update");
                         getMaxScoreUser();
                     });
                 }
