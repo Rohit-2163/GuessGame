@@ -133,7 +133,7 @@ function setScoreOnServer() {
                 let theirValue = obj.value;
                 let d_id = array[0].$id;
                 
-                if (currScore > theirValue) {
+                if (currScore >= theirValue) {
                     theirName = playerName;
                     theirValue = currScore;
                     const promise = databases.updateDocument(
