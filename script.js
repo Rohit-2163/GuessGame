@@ -57,7 +57,7 @@ document.querySelector(".again").addEventListener("click", function () {
 function getMaxScoreUser() {
     client
         .setEndpoint("https://cloud.appwrite.io/v1")
-        .setProject("64906375e9e333e824a5");
+        .setProject("64d750b23ab72c7b992d");
     //---------------------------------
     const databases = new Databases(client);
     //-----------------------------------
@@ -65,7 +65,7 @@ function getMaxScoreUser() {
     const key = `${date.getDate()}/${date.getFullYear()}`;
     //---------------------------------
     databases
-        .getDocument("64ff1122d44c1b583e4b", "64ff176d48790f46f55a", "", [
+        .getDocument("65006548babd8ba40c94", "65006568df7f60eb8777", "", [
             Query.equal("date", key),
         ])
         .then((obj) => {
@@ -90,7 +90,7 @@ getMaxScoreUser();
 function setScoreOnServer() {
     client
         .setEndpoint("https://cloud.appwrite.io/v1")
-        .setProject("64906375e9e333e824a5");
+        .setProject("64d750b23ab72c7b992d");
     //---------------------------------
     const databases = new Databases(client);
     //-----------------------------------
@@ -98,7 +98,7 @@ function setScoreOnServer() {
     const key = `${date.getDate()}/${date.getFullYear()}`;
     //---------------------------------
     databases
-        .getDocument("64ff1122d44c1b583e4b", "64ff176d48790f46f55a", "", [
+        .getDocument("65006548babd8ba40c94", "65006568df7f60eb8777", "", [
             Query.equal("date", key),
         ])
         .then((obj) => {
@@ -106,8 +106,8 @@ function setScoreOnServer() {
             let len = array.length;
             if (len == 0) {
                 const promise = databases.createDocument(
-                    "64ff1122d44c1b583e4b",
-                    "64ff176d48790f46f55a",
+                    "65006548babd8ba40c94", 
+                    "65006568df7f60eb8777",
                     ID.unique(),
                     {
                         date: key,
@@ -137,8 +137,8 @@ function setScoreOnServer() {
                     theirName = playerName;
                     theirValue = currScore;
                     const promise = databases.updateDocument(
-                        "64ff1122d44c1b583e4b",
-                        "64ff176d48790f46f55a",
+                        "65006548babd8ba40c94",
+                        "65006568df7f60eb8777",
                         d_id,
                         {
                             date: key,
